@@ -110,9 +110,17 @@ async function executeTerminalTask() {
                     max_new_tokens: 250,
                     temperature: 0.8,
                     return_full_text: false
+                },
+                options: {
+                    wait_for_model: true
                 }
             }),
         });
+
+        // Basic check for response existence
+        if (!response) {
+            throw new Error("NET_ERROR: NO_RESPONSE_FROM_HUB");
+        }
 
         const data = await response.json();
 
@@ -120,6 +128,7 @@ async function executeTerminalTask() {
             let msg = "SYS_CRITICAL: GEN_FAILED";
             if (response.status === 401) msg = "AUTH_DENIED: INVALID_TOKEN";
             else if (response.status === 429) msg = "BANDWIDTH_ERR: LIMIT_REACHED";
+            else if (response.status === 503) msg = "HUB_OVERLOAD: MODEL_LOADING";
             else msg = data.error || "UNKNOWN_HARDWARE_ERROR";
             throw new Error(msg);
         }
@@ -136,7 +145,13 @@ async function executeTerminalTask() {
 
     } catch (error) {
         console.error("Terminal Task Error:", error);
-        showError(error.message);
+
+        let displayMsg = error.message;
+        if (displayMsg === "Failed to fetch") {
+            displayMsg = "CONN_ERROR: HUB_UNREACHABLE (CHECK INTERNET/CORS)";
+        }
+
+        showError(displayMsg);
         bootStatus.style.display = 'flex';
     } finally {
         setLoading(false);

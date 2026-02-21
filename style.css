@@ -238,39 +238,44 @@ body {
     font-size: 20px;
     color: var(--terminal-cyan);
     line-height: 1.6;
-    text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+    text-shadow: 0 0 8px rgba(0, 255, 204, 0.8), 0 0 20px rgba(0, 255, 204, 0.3);
 }
 
 .cursor-prefix {
-    color: var(--terminal-dim);
-    animation: blink 1s step-end infinite;
+    color: var(--terminal-cyan);
+    font-weight: bold;
+    animation: blink 0.8s step-end infinite;
 }
 
-/* CRT Overlays */
+/* Enhanced CRT Overlays */
 .crt-overlays {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
-        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 118, 0.06));
-    background-size: 100% 3px, 3px 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%),
+        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 118, 0.03));
+    background-size: 100% 4px, 4px 100%;
     pointer-events: none;
     z-index: 10;
+    opacity: 0.8;
 }
 
-.crt-overlays::after {
+.crt-overlays::before {
     content: " ";
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(18, 16, 16, 0.1);
-    opacity: 0;
+    background: linear-gradient(to bottom,
+            rgba(18, 16, 16, 0) 0%,
+            rgba(18, 16, 16, 0.15) 50%,
+            rgba(18, 16, 16, 0) 100%);
+    background-size: 100% 200%;
+    animation: scanlineScroll 6s linear infinite;
     pointer-events: none;
-    animation: flicker 0.15s infinite;
 }
 
 /* Control Panel Base */
@@ -293,13 +298,17 @@ body {
 
 #prompt-input {
     width: 100%;
-    background: rgba(0, 0, 0, 0.05);
-    border: 2px solid rgba(0, 0, 0, 0.1);
+    background: #e0ddd0;
+    /* Lighter background for better contrast */
+    border: 2px solid rgba(0, 0, 0, 0.2);
     border-radius: 6px;
     padding: 15px;
     font-family: var(--font-ui);
-    font-size: 16px;
-    color: var(--panel-text);
+    font-size: 18px;
+    /* Larger text */
+    color: #1a1a1a;
+    /* Deeper black */
+    font-weight: 500;
     resize: none;
     margin-bottom: 20px;
     transition: var(--transition);
@@ -318,12 +327,20 @@ body {
     gap: 20px;
 }
 
+/* Panel Warning Style */
 .panel-error {
     color: var(--system-red);
-    font-size: 13px;
-    font-weight: 600;
-    font-style: italic;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 8px 12px;
+    border: 1px solid var(--system-red);
+    border-radius: 4px;
+    background: rgba(231, 76, 60, 0.1);
 }
+
 
 /* Animations */
 @keyframes blink {
