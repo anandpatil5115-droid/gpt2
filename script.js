@@ -222,8 +222,12 @@ async function runDiagnostics() {
     }
 
     try {
+        log("TESTING: API_SUBDOMAIN_REACHABILITY...");
+        // Test if the API subdomain itself is even pingable via a simple image request or no-cors fetch
+        await fetch("https://api-inference.huggingface.co", { mode: 'no-cors' });
+        log("PASS: API_SUBDOMAIN_FOUND");
+
         log("TESTING: API_PHYSICAL_HANDSHAKE...");
-        // A simple GET to the model page to check if the subdomain is reachable
         const apiRes = await fetch("https://huggingface.co/openai-community/gpt2", { mode: 'no-cors' });
         log(`PASS: SUBDOMAIN_REACHED`);
 
@@ -232,10 +236,14 @@ async function runDiagnostics() {
         const pingRes = await fetch(API_URL, { method: 'GET' });
         log(`PASS: API_STATUS_${pingRes.status}`);
     } catch (e) {
-        log("FAIL: CORS_OR_ADBLOCK_DETECTION");
-        log("REASON: The browser or an extension is killing the request.");
-        log("ACTION: 1. Disable uBlock Origin / Adblock Plus for this site. 2. Ensure your HF Token is correct.");
+        log("FAIL: SUBSYSTEM_BLOCK_DETECTED");
+        log(`ERR_DATA: ${e.message}`);
+        log("ANALYSIS: Your system or browser is specifically killing the API connection.");
+        log("ACTION: 1. Whitelist 'api-inference.huggingface.co' in your Antivirus/Firewall.");
+        log("ACTION: 2. If using a Corporate/School network, the API subdomain might be restricted.");
+        log("ACTION: 3. Try a different browser (e.g., Firefox if on Chrome).");
     }
+
 
     log("\nDIAGNOSTICS_COMPLETE.");
 }
