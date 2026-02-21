@@ -105,8 +105,9 @@ async function executeTerminalTask() {
 
         const response = await fetch(API_URL, {
             method: "POST",
+            mode: "cors", // Explicitly enable CORS
             headers: {
-                "Authorization": `Bearer ${hfApiKey}`,
+                "Authorization": `Bearer ${hfApiKey.trim()}`,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
@@ -150,11 +151,15 @@ async function executeTerminalTask() {
         typewriterType(outputText, generatedText);
 
     } catch (error) {
-        console.error("Terminal Task Debug Log:", error);
+        console.group("Terminal Task Debug Log");
+        console.error("System Error Type:", error.name);
+        console.error("Error Message:", error.message);
+        console.error("Stack Trace:", error.stack);
+        console.groupEnd();
 
         let displayMsg = error.message;
         if (displayMsg === "Failed to fetch") {
-            displayMsg = "CONN_ERROR: HUB_UNREACHABLE (CHECK INTERNET/CORS/ADBLOCK)";
+            displayMsg = "CONN_ERROR: HUB_UNREACHABLE (CHECK FIREWALL/ANTIVIRUS)";
         }
 
         showError(displayMsg);
