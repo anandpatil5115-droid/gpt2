@@ -60,8 +60,13 @@ function typewriterType(element, text, speed = 20) {
  */
 
 saveKeyBtn.addEventListener('click', () => {
+    const rawKey = apiKeyInput.value.trim();
+    if (!rawKey) {
+        alert("Authorization Token required for manual override.");
+        return;
+    }
     // Sanitize: remove "Bearer " prefix if user accidentally pasted it
-    const sanitizedKey = key.replace(/^Bearer\s+/i, '');
+    const sanitizedKey = rawKey.replace(/^Bearer\s+/i, '');
     hfApiKey = sanitizedKey;
 
     apiModal.style.display = 'none';
