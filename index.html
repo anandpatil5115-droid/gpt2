@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro AI Assistant | Analog Terminal</title>
+    <!-- Modern Sans-Serif + Monospace for Terminal -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- API Key Entry Modal -->
+    <div id="api-modal" class="modal-overlay">
+        <div class="modal-card hardware-panel">
+            <div class="panel-header">
+                <div class="power-light"></div>
+                <h2>System Authorization</h2>
+                <p>Insert your Hugging Face API key to bridge the neural link.</p>
+            </div>
+            <div class="panel-body">
+                <div class="input-unit">
+                    <label for="api-key-input">Authorization Token</label>
+                    <input type="password" id="api-key-input" placeholder="hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                        autocomplete="off">
+                </div>
+                <button id="save-key-btn" class="mechanical-btn full-width">Connect AI Bridge</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Terminal Desktop -->
+    <div id="app-container" class="terminal-desk" style="display: none;">
+        <nav class="system-nav">
+            <div class="brand">
+                <div class="status-indicator online"></div>
+                <span>GPT-2 TERMINAL V1.0</span>
+            </div>
+            <button id="reset-key-btn" class="system-btn small">Eject Bridge</button>
+        </nav>
+
+        <main class="chassis-core">
+            <div class="terminal-chassis">
+                <!-- Monitor Area -->
+                <div class="screen-frame">
+                    <div class="screen-glass">
+                        <div id="output-container" class="crt-content" style="display: none;">
+                            <div class="crt-header">
+                                <span class="prefix">LOG_VIEWER</span>
+                                <button id="copy-btn" class="crt-btn">COPY_DATA</button>
+                            </div>
+                            <div class="terminal-output">
+                                <span class="cursor-prefix">></span>
+                                <p id="output-text"></p>
+                            </div>
+                        </div>
+
+                        <div id="boot-status" class="crt-boot">
+                            <span class="glitch" data-text="AWAITING INPUT...">AWAITING INPUT...</span>
+                        </div>
+
+                        <!-- Scanline & Noise Overlay -->
+                        <div class="crt-overlays"></div>
+                    </div>
+                </div>
+
+                <!-- Input Panel / Chassis Base -->
+                <div class="control-panel">
+                    <div class="panel-textures"></div>
+                    <div class="input-hub">
+                        <div class="hardware-label">NEURAL PROMPT INPUT</div>
+                        <textarea id="prompt-input" placeholder="Type your vision command..." rows="4"></textarea>
+
+                        <div class="action-dock">
+                            <div id="error-container" class="panel-error" style="display: none;">
+                                <span id="error-message"></span>
+                            </div>
+                            <button id="generate-btn" class="mechanical-btn primary">
+                                <span class="btn-text">Execute Task</span>
+                                <span class="loader" style="display: none;"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="system-footer">
+            <div class="footer-stats">
+                <span>HF_MODEL: GPT-2</span>
+                <span>STATUS: STABLE</span>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

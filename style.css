@@ -1,0 +1,394 @@
+/* Retro-Analog Design System */
+:root {
+    --bg-dark: #0f1213;
+    /* Deep space background */
+    --chassis-bone: #d8d2c2;
+    /* Vintage hardware casing */
+    --chassis-shadow: #b7af9b;
+    /* Depth shadow for hardware */
+    --screen-bg: #050808;
+    /* CRT monitor surface */
+    --terminal-cyan: #00ffcc;
+    /* High-contrast neon text */
+    --terminal-dim: #008f7a;
+    /* Muted neon for headers */
+    --copper: #a67c52;
+    /* Mechanical accent (wiring/buttons) */
+    --copper-hot: #d99a6c;
+    /* Button hover glow */
+    --panel-text: #2c3e50;
+    /* Dark text on bone hardware */
+    --system-red: #e74c3c;
+    /* Error/Indicator red */
+
+    --radius-crt: 24px;
+    --radius-panel: 12px;
+    --shadow-deep: inset 0 10px 30px rgba(0, 0, 0, 0.5), 0 15px 40px rgba(0, 0, 0, 0.4);
+    --shadow-glow: 0 0 15px rgba(0, 255, 204, 0.4);
+
+    --font-ui: 'Inter', sans-serif;
+    --font-mono: 'Courier Prime', monospace;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-dark);
+    background-image: radial-gradient(circle at 50% 30%, #1e2a2d 0%, var(--bg-dark) 100%);
+    font-family: var(--font-ui);
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Modal Overlay (Hardware Style) */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.hardware-panel {
+    background: var(--chassis-bone);
+    color: var(--panel-text);
+    padding: 40px;
+    border-radius: var(--radius-panel);
+    width: 90%;
+    max-width: 450px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), inset 0 2px 0 #fff;
+    border-bottom: 8px solid var(--chassis-shadow);
+}
+
+.power-light {
+    width: 10px;
+    height: 10px;
+    background: #55efc4;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #55efc4;
+    margin-bottom: 20px;
+}
+
+.hardware-panel h2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+}
+
+.hardware-panel p {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.input-unit label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+}
+
+.input-unit input {
+    width: 100%;
+    padding: 14px;
+    background: #fff;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    margin-bottom: 24px;
+}
+
+/* Mechanical Controls */
+.mechanical-btn {
+    background: var(--copper);
+    color: white;
+    padding: 14px 28px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    box-shadow: 0 6px 0 #7e5c3c, 0 10px 20px rgba(0, 0, 0, 0.2);
+    transition: all 0.1s;
+}
+
+.mechanical-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #7e5c3c;
+}
+
+.mechanical-btn.primary {
+    background: var(--bg-dark);
+    box-shadow: 0 6px 0 #000;
+}
+
+.mechanical-btn.primary:active {
+    box-shadow: 0 2px 0 #000;
+}
+
+.full-width {
+    width: 100%;
+}
+
+/* Main Chassis UI */
+.terminal-desk {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.system-nav {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    color: #888;
+}
+
+.status-indicator.online {
+    width: 8px;
+    height: 8px;
+    background: var(--terminal-cyan);
+    border-radius: 50%;
+}
+
+.chassis-core {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.terminal-chassis {
+    width: 100%;
+    max-width: 900px;
+    background: var(--chassis-bone);
+    padding: 24px;
+    border-radius: 40px;
+    box-shadow: 0 50px 100px rgba(0, 0, 0, 0.8),
+        inset 0 4px 0 rgba(255, 255, 255, 0.8),
+        inset 0 -10px 20px var(--chassis-shadow);
+    border-bottom: 15px solid var(--chassis-shadow);
+}
+
+/* The Screen Frame */
+.screen-frame {
+    background: #1a1a1a;
+    padding: 20px;
+    border-radius: var(--radius-crt);
+    box-shadow: inset 0 5px 20px rgba(0, 0, 0, 1);
+    border: 4px solid #333;
+    margin-bottom: 30px;
+}
+
+.screen-glass {
+    background: var(--screen-bg);
+    height: 400px;
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: inset 0 0 100px rgba(0, 0, 0, 1);
+}
+
+.crt-content {
+    animation: fadeIn 0.5s ease forwards;
+    z-index: 5;
+}
+
+.terminal-output {
+    display: flex;
+    gap: 15px;
+    font-family: var(--font-mono);
+    font-size: 20px;
+    color: var(--terminal-cyan);
+    line-height: 1.6;
+    text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+}
+
+.cursor-prefix {
+    color: var(--terminal-dim);
+    animation: blink 1s step-end infinite;
+}
+
+/* CRT Overlays */
+.crt-overlays {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 118, 0.06));
+    background-size: 100% 3px, 3px 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.crt-overlays::after {
+    content: " ";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(18, 16, 16, 0.1);
+    opacity: 0;
+    pointer-events: none;
+    animation: flicker 0.15s infinite;
+}
+
+/* Control Panel Base */
+.control-panel {
+    background: #c5bba1;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1), 0 2px 0 rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.hardware-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.4);
+    margin-bottom: 15px;
+    letter-spacing: 0.2em;
+}
+
+#prompt-input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.05);
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    padding: 15px;
+    font-family: var(--font-ui);
+    font-size: 16px;
+    color: var(--panel-text);
+    resize: none;
+    margin-bottom: 20px;
+    transition: var(--transition);
+}
+
+#prompt-input:focus {
+    outline: none;
+    background: #fff;
+    border-color: var(--copper);
+}
+
+.action-dock {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 20px;
+}
+
+.panel-error {
+    color: var(--system-red);
+    font-size: 13px;
+    font-weight: 600;
+    font-style: italic;
+}
+
+/* Animations */
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+@keyframes flicker {
+    0% {
+        opacity: 0.16139;
+    }
+
+    5% {
+        opacity: 0.07008;
+    }
+
+    10% {
+        opacity: 0.1264;
+    }
+
+    15% {
+        opacity: 0.14201;
+    }
+
+    20% {
+        opacity: 0.00762;
+    }
+
+    25% {
+        opacity: 0.03135;
+    }
+
+    30% {
+        opacity: 0.12879;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .terminal-chassis {
+        padding: 15px;
+        border-radius: 20px;
+    }
+
+    .screen-glass {
+        height: 300px;
+        padding: 20px;
+    }
+
+    .terminal-output {
+        font-size: 16px;
+    }
+
+    .chassis-core {
+        padding: 20px 10px;
+    }
+}
