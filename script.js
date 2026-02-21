@@ -60,12 +60,10 @@ function typewriterType(element, text, speed = 20) {
  */
 
 saveKeyBtn.addEventListener('click', () => {
-    const key = apiKeyInput.value.trim();
-    if (!key) {
-        alert("Authorization Token required for manual override.");
-        return;
-    }
-    hfApiKey = key;
+    // Sanitize: remove "Bearer " prefix if user accidentally pasted it
+    const sanitizedKey = key.replace(/^Bearer\s+/i, '');
+    hfApiKey = sanitizedKey;
+
     apiModal.style.display = 'none';
     appContainer.style.display = 'flex';
     promptInput.focus();
@@ -132,7 +130,15 @@ async function executeTerminalTask() {
         if (!response.ok) {
             const data = await response.json().catch(() => ({}));
             let msg = "SYS_CRITICAL: GEN_FAILED";
-            if (response.status === 401) msg = "AUTH_DENIED: INVALID_TOKEN";
+
+            if (response.status === 401) {
+                msg = "AUTH_DENIED: INVALID_TOKEN_OR_SCOPE";
+                console.error("HF_AUTH_ERROR:", data.error || "Token has no inference permissions.");
+            }
+            else if (response.status === 403) {
+                msg = "AUTH_FORBIDDEN: KEY_PERMISSIONS_INSUFFICIENT";
+                console.error("HF_FORBIDDEN:", data.error);
+            }
             else if (response.status === 429) msg = "BANDWIDTH_ERR: LIMIT_REACHED";
             else if (response.status === 503) msg = "HUB_OVERLOAD: MODEL_LOADING";
             else msg = data.error || `HTTP_ERR_${response.status}`;
