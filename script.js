@@ -189,10 +189,57 @@ function hideError() {
 }
 
 /**
+ * CONNECTIVITY DIAGNOSTICS
+ */
+async function runDiagnostics() {
+    outputContainer.style.display = 'block';
+    bootStatus.style.display = 'none';
+    outputText.textContent = "RUNNING_SYSTEM_DIAGNOSTICS...\n\n";
+
+    const log = (msg) => outputText.textContent += `[DIAG] ${msg}\n`;
+
+    log(`BOM_STATUS: ${navigator.onLine ? "ONLINE" : "OFFLINE"}`);
+    log(`PROTOCOL: ${window.location.protocol}`);
+
+    if (window.location.protocol === 'file:') {
+        log("WARN: FILE_PROTOCOL detected. Some browsers block cross-origin requests from local files.");
+    }
+
+    try {
+        log("TESTING: CORE_INTERNET_REACHABILITY (google.com)...");
+        await fetch("https://www.google.com", { mode: 'no-cors' });
+        log("PASS: NET_FOUND");
+    } catch (e) {
+        log("FAIL: NET_REACH_ERROR");
+    }
+
+    try {
+        log("TESTING: HF_HUB_CONNECTIVITY...");
+        const hfRes = await fetch("https://huggingface.co", { mode: 'no-cors' });
+        log("PASS: HUB_REACHED");
+    } catch (e) {
+        log("FAIL: HUB_UNREACHABLE (POSSIBLE_DNS_OR_FIREWALL)");
+    }
+
+    try {
+        log("TESTING: API_CORS_HANDSHAKE...");
+        const apiRes = await fetch(API_URL, { method: 'OPTIONS' });
+        log(`PASS: API_ACK (STATUS: ${apiRes.status})`);
+    } catch (e) {
+        log("FAIL: CORS_BLOCK_DETECTED");
+        log("HINT: Try disabling Adblockers or using VS Code 'Live Server'.");
+    }
+
+    log("\nDIAGNOSTICS_COMPLETE.");
+}
+
+/**
  * GLOBAL LISTENERS
  */
 
 generateBtn.addEventListener('click', executeTerminalTask);
+document.getElementById('run-diag-btn').addEventListener('click', runDiagnostics);
+
 
 copyBtn.addEventListener('click', () => {
     navigator.clipboard.writeText(outputText.textContent).then(() => {
