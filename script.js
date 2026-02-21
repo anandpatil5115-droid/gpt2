@@ -222,12 +222,19 @@ async function runDiagnostics() {
     }
 
     try {
-        log("TESTING: API_CORS_HANDSHAKE...");
-        const apiRes = await fetch(API_URL, { method: 'OPTIONS' });
-        log(`PASS: API_ACK (STATUS: ${apiRes.status})`);
+        log("TESTING: API_PHYSICAL_HANDSHAKE...");
+        // A simple GET to the model page to check if the subdomain is reachable
+        const apiRes = await fetch("https://huggingface.co/openai-community/gpt2", { mode: 'no-cors' });
+        log(`PASS: SUBDOMAIN_REACHED`);
+
+        log("TESTING: API_PREFLIGHT_AUTH...");
+        // Check if the actual Inference API responds to a simple ping
+        const pingRes = await fetch(API_URL, { method: 'GET' });
+        log(`PASS: API_STATUS_${pingRes.status}`);
     } catch (e) {
-        log("FAIL: CORS_BLOCK_DETECTED");
-        log("HINT: Try disabling Adblockers or using VS Code 'Live Server'.");
+        log("FAIL: CORS_OR_ADBLOCK_DETECTION");
+        log("REASON: The browser or an extension is killing the request.");
+        log("ACTION: 1. Disable uBlock Origin / Adblock Plus for this site. 2. Ensure your HF Token is correct.");
     }
 
     log("\nDIAGNOSTICS_COMPLETE.");
