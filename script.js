@@ -98,6 +98,11 @@ async function executeTerminalTask() {
     outputContainer.style.display = 'none';
 
     try {
+        // Technical connectivity check
+        if (!navigator.onLine) {
+            throw new Error("OFFLINE_ERROR: NO_INTERNET_DETECTED");
+        }
+
         const response = await fetch(API_URL, {
             method: "POST",
             headers: {
@@ -122,17 +127,18 @@ async function executeTerminalTask() {
             throw new Error("NET_ERROR: NO_RESPONSE_FROM_HUB");
         }
 
-        const data = await response.json();
-
+        // Handle technical HTTP errors
         if (!response.ok) {
+            const data = await response.json().catch(() => ({}));
             let msg = "SYS_CRITICAL: GEN_FAILED";
             if (response.status === 401) msg = "AUTH_DENIED: INVALID_TOKEN";
             else if (response.status === 429) msg = "BANDWIDTH_ERR: LIMIT_REACHED";
             else if (response.status === 503) msg = "HUB_OVERLOAD: MODEL_LOADING";
-            else msg = data.error || "UNKNOWN_HARDWARE_ERROR";
+            else msg = data.error || `HTTP_ERR_${response.status}`;
             throw new Error(msg);
         }
 
+        const data = await response.json();
         const generatedText = Array.isArray(data) ? data[0].generated_text : data.generated_text;
 
         if (!generatedText) {
@@ -144,11 +150,11 @@ async function executeTerminalTask() {
         typewriterType(outputText, generatedText);
 
     } catch (error) {
-        console.error("Terminal Task Error:", error);
+        console.error("Terminal Task Debug Log:", error);
 
         let displayMsg = error.message;
         if (displayMsg === "Failed to fetch") {
-            displayMsg = "CONN_ERROR: HUB_UNREACHABLE (CHECK INTERNET/CORS)";
+            displayMsg = "CONN_ERROR: HUB_UNREACHABLE (CHECK INTERNET/CORS/ADBLOCK)";
         }
 
         showError(displayMsg);
