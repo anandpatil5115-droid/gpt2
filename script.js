@@ -3,7 +3,7 @@
  * Handles high-contrast text generation with typewriter effects.
  */
 
-const API_URL = "https://api-inference.huggingface.co/models/openai-community/gpt2";
+const API_URL = "https://router.huggingface.co/hf-inference/models/openai-community/gpt2";
 
 // Application State
 let hfApiKey = "";
@@ -227,27 +227,26 @@ async function runDiagnostics() {
     }
 
     try {
-        log("TESTING: API_SUBDOMAIN_REACHABILITY...");
-        // Test if the API subdomain itself is even pingable via a simple image request or no-cors fetch
-        await fetch("https://api-inference.huggingface.co", { mode: 'no-cors' });
-        log("PASS: API_SUBDOMAIN_FOUND");
+        log("TESTING: API_ROUTER_REACHABILITY...");
+        // Test if the new router subdomain is pingable
+        await fetch("https://router.huggingface.co", { mode: 'no-cors' });
+        log("PASS: ROUTER_FOUND");
 
         log("TESTING: API_PHYSICAL_HANDSHAKE...");
         const apiRes = await fetch("https://huggingface.co/openai-community/gpt2", { mode: 'no-cors' });
         log(`PASS: SUBDOMAIN_REACHED`);
 
         log("TESTING: API_PREFLIGHT_AUTH...");
-        // Check if the actual Inference API responds to a simple ping
+        // Check if the current API_URL (router) responds
         const pingRes = await fetch(API_URL, { method: 'GET' });
         log(`PASS: API_STATUS_${pingRes.status}`);
     } catch (e) {
-        log("FAIL: SUBSYSTEM_BLOCK_DETECTED");
+        log("FAIL: API_ACCESS_DETECTION");
         log(`ERR_DATA: ${e.message}`);
-        log("ANALYSIS: Your system or browser is specifically killing the API connection.");
-        log("ACTION: 1. Whitelist 'api-inference.huggingface.co' in your Antivirus/Firewall.");
-        log("ACTION: 2. If using a Corporate/School network, the API subdomain might be restricted.");
-        log("ACTION: 3. Try a different browser (e.g., Firefox if on Chrome).");
+        log("ANALYSIS: Hugging Face recently moved their API to router.huggingface.co.");
+        log("ACTION: Double-check your Internet or Corporate Firewall (router.huggingface.co).");
     }
+
 
 
     log("\nDIAGNOSTICS_COMPLETE.");
